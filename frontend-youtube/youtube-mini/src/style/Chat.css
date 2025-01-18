@@ -1,0 +1,278 @@
+/* Add position styling for chat container */
+.chat-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 400px;
+    height: 500px;
+    background-color: #F8F9FA; /* Nền sáng */
+    color: #212529; /* Màu chữ tối hơn */
+    border-radius: 15px; /* Bo cong viền container */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    z-index: 1000; /* Ensure chat stays above other content */
+    animation: slideUp 0.3s ease-out;
+}
+
+/* Optional animation for chat opening */
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.chat-container {
+    animation: slideUp 0.3s ease-out;
+}
+
+/* Rest of the CSS remains the same */
+/* Chat Header */
+.chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    border-bottom: 1px solid #CED4DA; /* Đường phân cách nhạt */
+    background-color: #E9ECEF; /* Nền header nhạt */
+    border-top-left-radius: 15px; /* Bo cong góc trên trái */
+    border-top-right-radius: 15px; /* Bo cong góc trên phải */
+}
+
+/* User Info (Avatar, Name, Status) */
+.chat-header .user-info {
+    display: flex;
+    align-items: center;  /* Căn giữa theo chiều dọc */
+    gap: 12px;  /* Khoảng cách giữa avatar và các phần tử tên/status */
+}
+
+/* Avatar Container */
+.avatar-container {
+    position: relative;
+    width: 40px; /* Kích thước avatar */
+    height: 40px;
+}
+
+/* Avatar Image */
+.avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;  /* Làm avatar hình tròn */
+}
+
+/* Status Dot (online status) */
+.status-dot {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 12px;
+    height: 12px;
+    background-color: #31A24C;  /* Màu xanh cho trạng thái online */
+    border-radius: 50%;
+    border: 2px solid #000000;
+}
+
+/* User Name */
+.user-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Chỉnh sửa để username và status nằm ngang */
+
+
+/* User Name */
+.chat-header .user-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #495057; /* Màu chữ tối */
+}
+
+/* User Status */
+.user-status {
+    font-size: 12px;
+    color: #28A745; /* Xanh lá nổi bật */
+}
+
+/* Header Actions (Buttons) */
+.header-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.header-button {
+    background: none;
+    border: none;
+    color: #A855F7;
+    cursor: pointer;
+    padding: 4px;
+}
+
+/* Close Button */
+.header-button.close {
+    color: #9CA3AF;
+}
+
+.messages-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    background-color: #FFFFFF; /* Nền trắng */
+    border-bottom-left-radius: 20px; /* Bo cong góc dưới trái */
+    border-bottom-right-radius: 20px; /* Bo cong góc dưới phải */
+}
+
+.message {
+    display: flex;
+    margin-bottom: 16px;
+    align-items: flex-end;
+}
+
+.message.sent {
+    justify-content: flex-end;
+}
+
+.message.received {
+    justify-content: flex-start;
+}
+
+.message-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.messages-container .message-content {
+    padding: 8px 16px;
+    border-radius: 18px; /* Bo cong bóng tin nhắn */
+    max-width: 70%;
+    word-break: break-word;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.message.sent .message-content {
+    background-color: #007BFF; /* Xanh lam đậm */
+    color: #FFFFFF; /* Chữ trắng */
+    border-top-left-radius: 18px; /* Tạo hiệu ứng bo cong nổi bật */
+    border-bottom-right-radius: 18px;
+}
+
+/* Received Messages */
+.message.received .message-content {
+    background-color: #F1F3F5; /* Xám nhạt */
+    color: #212529; /* Chữ tối */
+    border-top-right-radius: 18px; /* Tạo hiệu ứng bo cong nổi bật */
+    border-bottom-left-radius: 18px;
+}
+
+.chat-input {
+    padding: 12px;
+    border-top: 1px solid #CED4DA;
+    background-color: #E9ECEF; /* Nền nhạt */
+    border-bottom-left-radius: 20px; /* Bo góc dưới container */
+    border-bottom-right-radius: 20px;
+}
+
+.input-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.input-actions {
+    display: flex;
+    gap: 4px;
+}
+
+.action-button {
+    padding: 8px;
+    background: #FFFFFF; /* Nền trắng */
+    border: 1px solid #CED4DA;
+    color: #007BFF; /* Xanh lam */
+    border-radius: 50%; /* Bo tròn hoàn toàn */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.action-button:hover {
+    background-color: #DEE2E6; /* Hover màu xám nhạt */
+}
+
+.message-input {
+    flex: 1;
+    background-color: #FFFFFF; /* Nền trắng */
+    border: 1px solid #CED4DA; /* Viền nhạt */
+    border-radius: 20px; /* Bo góc input */
+    padding: 8px 16px;
+    color: #212529; /* Chữ tối */
+    font-size: 14px;
+}
+
+.message-input:focus {
+    outline: none;
+}
+
+.message-input::placeholder {
+    color: #6C757D; /* Placeholder màu xám */
+}
+
+/* Scrollbar Styles */
+.messages-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.messages-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.messages-container::-webkit-scrollbar-thumb {
+    background: #ADB5BD; /* Scrollbar màu xám nhạt */
+}
+.messages-container::-webkit-scrollbar-thumb:hover {
+    background: #868E96; /* Hover scrollbar đậm hơn */
+}
+
+/* Add media queries for responsiveness */
+@media screen and (max-width: 768px) {
+    .chat-container {
+        width: 100%;
+        height: 100%;
+        bottom: 0;
+        right: 0;
+        border-radius: 0;
+    }
+
+    .chat-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .user-info {
+        flex-direction: row; /* Đảm bảo rằng tên và trạng thái vẫn ngang với avatar */
+        gap: 12px;
+    }
+
+    .avatar-container {
+        width: 32px;
+        height: 32px;
+    }
+
+    .chat-header .user-name {
+        font-size: 14px;
+    }
+
+    .user-status {
+        font-size: 10px;
+    }
+}

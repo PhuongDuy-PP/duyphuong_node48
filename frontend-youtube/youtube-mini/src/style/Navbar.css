@@ -1,0 +1,186 @@
+nav {
+    padding: 10px 2%;
+    justify-content: space-between;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    background: #fff;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+/* Popup Menu Styles */
+.nav-right {
+    display: flex;
+    align-items: center;
+}
+
+.nav-right .icon-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.nav-right .icon-container img,
+.nav-right .icon-container i {
+    cursor: pointer;
+    font-size: 24px;
+}
+
+.nav-right .icon-container .message-badge,
+.nav-right .icon-container .notification-badge {
+    position: absolute;
+    top: -5px;
+    /* Điều chỉnh khoảng cách từ trên xuống */
+    /* Điều chỉnh khoảng cách từ phải qua */
+    background-color: red;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 50%;
+    padding: 2px 6px;
+    min-width: 18px;
+    /* Đảm bảo hình tròn */
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.nav-right .icon-container .message-badge {
+    right: 12px;
+}
+
+.nav-right .icon-container .notification-badge {
+    right: 16px;
+}
+
+.nav-right img {
+    width: 25px;
+    margin-right: 25px;
+}
+
+.nav-right .user-icon {
+    width: 35px;
+    border-radius: 50%;
+    margin-right: 0;
+}
+
+.nav-left .menu-icon {
+    width: 22px;
+    margin-right: 25px;
+}
+
+.nav-left .logo {
+    width: 130px;
+}
+
+.nav-middle .mic-icon {
+    width: 16px;
+}
+
+.nav-middle .search-box {
+    border: 1px solid #ccc;
+    margin-right: 15px;
+    padding: 8px 12px;
+    border-radius: 25px;
+}
+
+.nav-middle .search-box input {
+    width: 400px;
+    border: 0;
+    outline: 0;
+    background: transparent;
+}
+
+.nav-middle .search-box img {
+    width: 15px;
+}
+
+.popup-menu {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 230px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+}
+
+.popup-item {
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 14px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    align-items: center;
+}
+
+.popup-item:last-child {
+    border-bottom: none;
+    margin-top: auto;
+}
+
+.popup-item:hover {
+    background-color: #f1f1f1;
+}
+
+.popup-item i {
+    margin-right: 14px;
+    font-size: 16px;
+}
+
+.sign-in-button {
+    padding: 8px 16px;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.sign-in-button:hover {
+    background-color: #d32f2f;
+}
+
+.popup-header {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    /* Đường kẻ dưới */
+}
+
+.popup-menu .user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.popup-header .user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-name {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.user-link .channel-link {
+    font-size: 12px;
+    color: #0073e6;
+    /* Màu xanh cho liên kết */
+    text-decoration: none;
+}
+
+.user-link .channel-link:hover {
+    text-decoration: underline;
+}

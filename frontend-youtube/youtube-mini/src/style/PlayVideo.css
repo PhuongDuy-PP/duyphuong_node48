@@ -1,0 +1,261 @@
+.container {
+    background: white;
+    padding-left: 17%;
+    padding-right: 2%;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.large-container {
+    padding-left: 7%;
+}
+
+.small-thumbnail {
+    position: relative;
+    display: block;
+}
+
+.video-duration {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 2px 5px;
+    font-size: 12px;
+    border-radius: 3px;
+}
+
+.banner {
+    width: 100%;
+}
+
+.banner img {
+    width: 100%;
+    border-radius: 8px;
+}
+
+.play-container {
+    padding-left: 2%;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.play-video {
+    flex-basis: 69%;
+}
+
+.play-video video {
+    width: 100%;
+}
+
+.right-sidebar {
+    flex-basis: 30%;
+}
+
+.side-video-list {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.side-video-list img {
+    width: 100%;
+}
+
+.side-video-list .small-thumbnail {
+    flex-basis: 49%;
+}
+
+.side-video-list .vid-info {
+    flex-basis: 49%;
+}
+
+.play-video .tags a {
+    color: #0000ff;
+    font-size: 13px;
+}
+
+.play-video h3 {
+    font-weight: 600;
+    font-size: 22px;
+}
+
+.play-video .play-video-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-top: 10px;
+    font-size: 14px;
+    color: #5a5a5a;
+}
+
+.play-video .play-video-info a img {
+    width: 20px;
+    margin-right: 8px;
+}
+
+.play-video .play-video-info a {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 15px;
+}
+
+.play-video hr {
+    border: 0;
+    height: 1px;
+    background: #ccc;
+    margin: 10px 0;
+}
+
+.publisher {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.publisher div {
+    flex: 1;
+    line-height: 18px;
+}
+
+.publisher img {
+    width: 40px;
+    border-radius: 50%;
+    margin-right: 15px;
+}
+
+.publisher div p {
+    color: #000;
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.publisher div span {
+    font-size: 13px;
+    color: #5a5a5a;
+}
+
+.publisher button {
+    background: red;
+    color: #fff;
+    padding: 8px 30px;
+    border: 0;
+    outline: 0;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.vid-description {
+    padding-left: 55px;
+    margin: 15px 0;
+}
+
+.vid-description p {
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: #5a5a5a;
+}
+
+.vid-description h4 {
+    font-size: 14px;
+    color: #5a5a5a;
+    margin-top: 15px;
+}
+
+.add-comment {
+    display: flex;
+    align-items: flex-start;
+    margin: 30px 0;
+}
+
+.add-comment img {
+    width: 35px;
+    border-radius: 50%;
+    margin-right: 15px;
+}
+
+.add-comment input {
+    border: 0;
+    outline: 0;
+    border-bottom: 1px solid #ccc;
+    width: 100%;
+    background: transparent;
+    padding-top: 10px;
+}
+
+.old-comment {
+    display: flex;
+    align-items: flex-start;
+    margin: 20px 0;
+}
+
+.old-comment img {
+    width: 35px;
+    border-radius: 50%;
+    margin-right: 15px;
+}
+
+.old-comment h3 {
+    font-size: 14px;
+    margin-bottom: 2px;
+}
+
+.old-comment h3 span {
+    font-size: 12px;
+    color: #5a5a5a;
+    font-weight: 500;
+    margin-left: 8px;
+}
+
+.old-comment .comment-action {
+    display: flex;
+    align-items: center;
+    margin: 8px 0;
+    font-size: 14px;
+}
+
+.old-comment .comment-action img {
+    border-radius: 0;
+    width: 20px;
+    margin-right: 5px;
+}
+
+.old-comment .comment-action span {
+    margin-right: 20px;
+    color: #5a5a5a;
+}
+
+.old-comment .comment-action a {
+    color: #0000ff;
+}
+
+
+@media (max-width: 900px) {
+    .play-video {
+        flex-basis: 100%;
+    }
+
+    .right-sidebar {
+        flex-basis: 100%;
+    }
+
+    .play-container {
+        padding-left: 5%;
+    }
+
+    .vid-description {
+        padding-left: 0;
+    }
+
+    .play-video .play-video-info a {
+        margin-left: 0;
+        margin-right: 15px;
+        margin-top: 15px;
+    }
+}

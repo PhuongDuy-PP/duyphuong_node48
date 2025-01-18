@@ -1,0 +1,109 @@
+.message-list-container {
+    position: absolute;
+    right: 0;
+    top: 100%;
+    /* Position right below navbar */
+    width: 330px;
+    background: #FFFFFF; /* Nền sáng */
+    border-radius: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    color: #212529; /* Màu chữ tối */
+    z-index: 1000;
+    max-height: calc(100vh - 60px);
+    /* Adjust based on your navbar height */
+    overflow-y: auto;
+}
+
+.message-list-header {
+    padding: 16px;
+    border-bottom: 1px solid #DEE2E6; /* Viền nhạt */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    background: #F8F9FA; /* Nền nhạt */
+    z-index: 1;
+}
+
+.message-list-header button {
+    background: none;
+    border: none;
+    color: #495057; /* Màu nút tối hơn */
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.message-list-container .search-box {
+    padding: 8px 16px;
+    position: sticky;
+    top: 53px;
+    background: #F8F9FA; /* Nền nhạt */
+    z-index: 1;
+}
+
+.message-list-container .search-box input {
+    width: 100%;
+    padding: 8px;
+    border-radius: 20px;
+    border: 1px solid #CED4DA; /* Viền nhạt */
+    background: #FFFFFF; /* Nền trắng */
+    color: #495057; /* Chữ tối */
+}
+
+.tabs {
+    display: flex;
+    padding: 0 16px;
+    border-bottom: 1px solid #DEE2E6; /* Viền nhạt */
+    position: sticky;
+    top: 101px;
+    background: #F8F9FA; /* Nền nhạt */
+    z-index: 1;
+}
+
+.tabs button {
+    padding: 12px;
+    background: none;
+    border: none;
+    color: #6C757D; /* Màu chữ nhạt hơn */
+    cursor: pointer;
+}
+
+.tabs button.active {
+    color: #007BFF; /* Xanh lam đậm */
+    border-bottom: 2px solid #007BFF;
+}
+
+.messages {
+    overflow-y: auto;
+}
+
+.message-item {
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.message-item:hover {
+    background: #F1F3F5; /* Hover nền xám nhạt */
+}
+
+.message-item .avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    margin-right: 12px;
+}
+
+.message-item .message-content h4 {
+    margin: 0;
+    font-size: 15px;
+    color: #212529; /* Màu chữ đậm hơn */
+}
+
+.message-item .message-content p {
+    margin: 4px 0 0;
+    color: #6C757D; /* Màu chữ nhạt */
+    font-size: 13px;
+}
