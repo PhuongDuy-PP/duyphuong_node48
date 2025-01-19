@@ -1,0 +1,3 @@
+backend-youtube/.env
+backend-youtube/node_modules
+frontend-youtube/youtube-mini/node_modules
