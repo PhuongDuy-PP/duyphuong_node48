@@ -1,5 +1,5 @@
 import express from "express";
-import { register } from "../controllers/authController.js";
+import { login, register } from "../controllers/authController.js";
 
 const authRouter = express.Router();
 
@@ -7,5 +7,6 @@ const authRouter = express.Router();
 authRouter.post("/register", register);
 
 // Đăng nhập
+authRouter.post("/login", login)
 
 export default authRouter;
