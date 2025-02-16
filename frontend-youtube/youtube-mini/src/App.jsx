@@ -5,18 +5,25 @@ import Navbar from './components/Navbar'
 import Sidebar from './components/Sidebar'
 import VideoList from './components/VideoList'
 import PlayVideo from './components/PlayVideo'
-import {SidebarProvider} from './contexts/SidebarContext'
+import { SidebarProvider } from './contexts/SidebarContext'
 import Login from "./components/Login";
 import UserProfile from "./components/UserProfile";
+import { ToastContainer, toast } from 'react-toastify'; // import thư viện toastify
+// import css cho toastify
+import 'react-toastify/dist/ReactToastify.css';
 
 // Component App
 function App() {
   return (
-    <Router>
-      <SidebarProvider>
-        <AppContent />
-      </SidebarProvider>
-    </Router>
+    <>
+      <ToastContainer position="bottom-right" />
+      <Router>
+        <SidebarProvider>
+          <AppContent />
+        </SidebarProvider>
+      </Router>
+    </>
+
   );
 }
 

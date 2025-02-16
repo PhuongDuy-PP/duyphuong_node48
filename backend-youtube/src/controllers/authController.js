@@ -1,3 +1,5 @@
+import { createAccessToken } from "../config/jwt.js";
+import transporter from "../config/transporter.js";
 import connect from "../models/connect.js";
 import initModels from "../models/init-models.js";
 import bcrypt from "bcrypt";
@@ -38,8 +40,29 @@ const register = async (req, res) => {
       const userNew = result.dataValues;
       delete userNew.pass_word;
 
-      // 6 - Trả dữ liệu đăng ký thành công về lại cho FE
-      res.status(200).json(userNew);
+      // 6. Send mail welcome to new user
+      // cấu hình format email welcome
+      const welcomeMail = {
+         from: process.env.EMAIL_USER,
+         to: email,
+         subject: "Welcome to Our Website",
+         html: `
+            <h1>Welcome ${full_name} to Our Website</h1>
+         `
+      }
+
+      // gửi email
+      // param1: dữ liệu email => welcomeMail
+      // param2: callback function
+      //         + nếu gửi mail thành công thì trả về thông báo 
+      //         + nếu gửi mail thất bại thì trả về lỗi
+      transporter.sendMail(welcomeMail, (err, info) => {
+         if (err) {
+            return res.status(500).json({ message: "Gửi mail thất bại" });
+         }
+         // 7 - Trả dữ liệu đăng ký thành công về lại cho FE
+         res.status(200).json(userNew);
+      });
    } catch (error) {
       console.log(error);
       res.status(500).json(`Error ${error}`);
@@ -80,10 +103,19 @@ const login = async (req, res) => {
          return;
       }
 
-      // 3.1 - Gửi email chào mừng
+      // tạo access token cho user
+      const payload = {
+         userId: userExists.user_id
+      }
+
+      // tạo access token
+      const accessToken = createAccessToken(payload);
 
       // 4 - Trả kết quả thành công
-      res.status(200).json(`Đăng nhập thành công`);
+      res.status(200).json({
+         message: "Đăng nhập thành công",
+         token: accessToken
+      });
    } catch (error) {
       console.log(error);
       res.status(500).json(`Error ${error}`);
