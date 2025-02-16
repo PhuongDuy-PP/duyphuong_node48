@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import '../style/Login.css';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { login, register } from '../api/authService';
 import { toast } from 'react-toastify';
 
@@ -17,7 +17,7 @@ const LoginComponent = () => {
         setError('');
 
         try {
-            const response = await login({email, pass_word});
+            const response = await login({ email, pass_word });
             console.log("Login response: ", response);
 
             // Hiển thị thông báo đăng nhập thành công
@@ -39,7 +39,7 @@ const LoginComponent = () => {
         e.preventDefault();
         setError('');
         try {
-            const response = await register({email, pass_word, full_name});
+            const response = await register({ email, pass_word, full_name });
             toast.success("Register successfully");
             console.log("Register response: ", response);
         } catch (error) {
@@ -131,7 +131,9 @@ const LoginComponent = () => {
                         onChange={(e) => setPassword(e.target.value)}
                         required
                     />
-                    <a href="#">Forgot your password?</a>
+                    <Link to="/forgot-pass">
+                        Forgot your password?
+                    </Link>
                     <button>Sign In</button>
                 </form>
             </div>

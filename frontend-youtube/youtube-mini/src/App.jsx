@@ -11,6 +11,7 @@ import UserProfile from "./components/UserProfile";
 import { ToastContainer, toast } from 'react-toastify'; // import thư viện toastify
 // import css cho toastify
 import 'react-toastify/dist/ReactToastify.css';
+import PasswordReset from "./components/ForgotPass";
 
 // Component App
 function App() {
@@ -46,6 +47,7 @@ const AppContent = () => {
             <Route path="/play-video/:id" element={<PlayVideo />} /> {/* Trang phát video */}
             <Route path="/login" element={<Login />} />
             <Route path="/profile" element={<UserProfile />} />
+            <Route path="/forgot-pass" element={<PasswordReset />} />
           </Routes>
         </div>
       </div>
