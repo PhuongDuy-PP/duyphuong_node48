@@ -3,6 +3,7 @@
 
 import express from 'express';
 import { getUsers, createUser } from '../controllers/userController.js';
+import { middlewareToken } from '../config/jwt.js';
 
 // tạo userRoutes
 const userRoutes = express.Router();
@@ -11,7 +12,7 @@ const userRoutes = express.Router();
 userRoutes.get("/get-users", getUsers);
 
 //API create-user
-userRoutes.post("/create-user", createUser);
+userRoutes.post("/create-user", middlewareToken , createUser);
 
 // export userRoutes
 export default userRoutes;
