@@ -33,10 +33,21 @@ const createUser = async (req, res) => {
     }
 }
 
+const uploadAvatar = async (req, res) => {
+    try {
+        let file = req.file;
+        return res.status(200).json(file);
+    } catch (error) {
+        console.log("uploadAvatar error", error);
+        return res.status(500).json({message: "Error upload avatar"});
+    }
+}
+
 // export
 // nếu export 2 biến hoặc function trở lên
 //  thì không dùng default
 export {
     getUsers,
-    createUser
+    createUser,
+    uploadAvatar
 }
