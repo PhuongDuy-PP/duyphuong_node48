@@ -250,4 +250,68 @@ const resetPassword = async (req, res) => {
    }
 }
 
-export { register, login, forgotPassword, resetPassword };
+const loginFacebook =  async (req, res) => {
+   try {
+      // 1 - Nhận dữ liệu: email, id, name của facebook
+      let {id, email, name} = req.body;
+
+      // 2 - Kiểm tra email có tồn tại trong db hay không
+      let userExist = await models.users.findOne({
+         where: {email}
+      });
+
+      // TH1: email không tồn tại trong db
+      // tạo user mới
+      // send mail welcome
+      // tạo access token,
+      // trả về cho FE
+      if (!userExist) {
+         let newUser = await models.users.create({
+            full_name: name,
+            email,
+            pass_word: " ",
+            face_app_id: id
+         });
+         const mailOption = {
+            from: process.env.EMAIL_USER,
+            to: email,
+            subject: "Welcome to Our Website",
+            html: `
+               <h1>Welcome ${name} to Our Website</h1>
+            `
+         }
+         return transporter.sendMail(mailOption, (err, info) => {
+            if(err) {
+               return res.status(500).json({message: "Gửi mail thất bại"});
+            }
+
+            // tạo access token cho user
+            let payload = {
+               userId: newUser.user_id
+            }
+            let accessToken = createAccessToken(payload);
+            return res.status(200).json({message: "Đăng nhập thành công", token: accessToken});
+         })
+      }
+
+      // TH2: email đã tồn tại trong db
+      // kiểm tra user có face_app_id hay không
+      // nếu có thì trả về access token
+      // nếu không thì báo lỗi, yêu cầu đăng nhập bằng email
+      if(!userExist.face_app_id) {
+         return res.status(400).json({message: "Vui lòng đăng nhập bằng email"});
+      }
+
+      // tạo access token cho user
+      let payload = {
+         userId: userExist.user_id
+      }
+      let accessToken = createAccessToken(payload);
+      return res.status(200).json({message: "Đăng nhập thành công", token: accessToken});
+   } catch (error) {
+      console.log(error);
+      return res.status(500).json({message: "Error API loginFacebook"});
+   }
+}
+
+export { register, login, forgotPassword, resetPassword, loginFacebook };

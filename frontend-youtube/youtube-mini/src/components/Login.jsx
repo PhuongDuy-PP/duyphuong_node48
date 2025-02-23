@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import '../style/Login.css';
 import { Link, useNavigate } from 'react-router-dom';
-import { login, register } from '../api/authService';
+import { login, loginFacebook, register } from '../api/authService';
 import { toast } from 'react-toastify';
+import ReactFacebookLogin from 'react-facebook-login';
 
 
 const LoginComponent = () => {
@@ -49,6 +50,21 @@ const LoginComponent = () => {
         }
     }
 
+    const handleLoginFacebook = async (payload) => {
+        try {
+            console.log("payload login facebook: ", payload);
+            const response = await loginFacebook(payload);
+            if(response.status === 200) {
+                toast.success("Login successfully");
+                localStorage.setItem("USER_LOGIN", response.data.token);
+                navigate('/');
+            }
+        } catch (error) {
+            console.log("Login Facebook failed: ", error);
+            toast.error(error.response.data.message);
+        }
+    }
+
     useEffect(() => {
         const signUpButton = document.getElementById('signUp');
         const signInButton = document.getElementById('signIn');
@@ -77,7 +93,11 @@ const LoginComponent = () => {
                 <form onSubmit={handleRegister}>
                     <h1>Create Account</h1>
                     <div className="social-container">
-                        <a href="#" className="social"><i className="fab fa-facebook-f" /></a>
+                        <ReactFacebookLogin
+                            appId='1414546939706641'
+                            fields='name,email,picture'
+                            callback={handleLoginFacebook}
+                        />
                         <a href="#" className="social"><i className="fab fa-google-plus-g" /></a>
                         <a href="#" className="social"><i className="fab fa-linkedin-in" /></a>
                     </div>
@@ -112,7 +132,12 @@ const LoginComponent = () => {
                 <form onSubmit={handleLogin}>
                     <h1>Sign in</h1>
                     <div className="social-container">
-                        <a href="#" className="social"><i className="fab fa-facebook-f" /></a>
+                        <ReactFacebookLogin
+                            appId='1414546939706641'
+                            fields='name,email,picture'
+                            callback={handleLoginFacebook}
+                            icon="fa-facebook"
+                        />
                         <a href="#" className="social"><i className="fab fa-google-plus-g" /></a>
                         <a href="#" className="social"><i className="fab fa-linkedin-in" /></a>
                     </div>
