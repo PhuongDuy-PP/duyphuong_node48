@@ -4,11 +4,13 @@
 import initModels from "../models/init-models.js";
 import connect from "../models/connect.js";
 import { formatVideoList } from "../utils/formatData.js";
+import {PrismaClient} from '@prisma/client';
 
 // để connect tới datadabe
 // thì phải tạo kết nối tới database thông qua initModels
 // connect: địa chỉ kết nối tới database
 const models = initModels(connect);
+const prisma = new PrismaClient();
 
 // --------------- controller video
 // CREATE
@@ -55,7 +57,8 @@ const createVideo = async (req, res) => {
 // READ
 const listVideo = async (req, res) => {
    try {
-      const listVideos = await models.videos.findAll();
+      // const listVideos = await models.videos.findAll();
+      const listVideos = await prisma.videos.findMany();
 
       // format dữ liệu listVideos
       const listVideosFormatted = formatVideoList(listVideos);
@@ -64,6 +67,7 @@ const listVideo = async (req, res) => {
       // VD: 200: OK
       // 201: Created
       return res.status(200).json(listVideosFormatted);
+      // return res.status(200).json(listVideos)
    } catch (error) {
       console.log(error);
       // 5xx: lỗi của hệ thống
@@ -128,10 +132,15 @@ const createVideoType = async (req, res) => {
       const { type_name } = req.body;
       console.log("Dữ liệu ở body - type_name::", type_name);
 
-      const result = await models.video_types.create({
-         type_name: type_name,
-      });
-      console.log("Kết quả tạo video type", result.toJSON());
+      // const result = await models.video_types.create({
+      //    type_name: type_name,
+      // });
+      const result = await prisma.video_types.create({
+         data: {
+            type_name: type_name,
+         }
+      })
+      // console.log("Kết quả tạo video type", result.toJSON());
 
       res.status(200).json(result);
    } catch (error) {

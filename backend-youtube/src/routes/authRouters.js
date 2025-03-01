@@ -1,5 +1,5 @@
 import express from "express";
-import { forgotPassword, login, loginFacebook, register, resetPassword } from "../controllers/authController.js";
+import { extendToken, forgotPassword, login, loginFacebook, register, resetPassword } from "../controllers/authController.js";
 
 const authRouter = express.Router();
 
@@ -18,4 +18,5 @@ authRouter.post("/reset-password", resetPassword);
 // login facebook
 authRouter.post("/login-facebook", loginFacebook);
 
+authRouter.post("/extend-token", extendToken);
 export default authRouter;

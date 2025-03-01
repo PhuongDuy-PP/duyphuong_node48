@@ -2,6 +2,7 @@
 
 import express from "express";
 import { createVideo, createVideoType, deleteVideo, getVideoTypes, listVideo, updateVideo } from "../controllers/videoController.js";
+import { middlewareToken } from "../config/jwt.js";
 
 // tạo videoRoutes
 const videoRoutes = express.Router();
@@ -26,6 +27,6 @@ videoRoutes.post("/create-video-types", createVideoType);
 
 // define API
 // READ
-videoRoutes.get("/get-video-types", getVideoTypes);
+videoRoutes.get("/get-video-types", middlewareToken, getVideoTypes);
 
 export default videoRoutes;

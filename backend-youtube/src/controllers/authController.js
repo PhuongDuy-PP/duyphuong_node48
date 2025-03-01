@@ -1,12 +1,14 @@
-import { createAccessToken } from "../config/jwt.js";
+import { createAccessToken, createRefreshToken } from "../config/jwt.js";
 import transporter from "../config/transporter.js";
 import connect from "../models/connect.js";
 import initModels from "../models/init-models.js";
 import bcrypt from "bcrypt";
 import crypto from "crypto"; // lib để tạo code forgot password
 import { sendMailForgotPassword } from "../utils/sendMail.js";
+import {PrismaClient} from '@prisma/client';
 
 const models = initModels(connect);
+const prisma = new PrismaClient();
 
 const register = async (req, res) => {
    try {
@@ -112,6 +114,27 @@ const login = async (req, res) => {
 
       // tạo access token
       const accessToken = createAccessToken(payload);
+
+      // tạo refresh token
+      const refreshToken = createRefreshToken(payload);
+
+      // lưu refresh token vào db
+      await prisma.users.update({
+         where: {
+            user_id: userExists.user_id
+         },
+         data: {
+            refresh_token: refreshToken
+         }
+      });
+
+      // gắn refresh token cho cookie của response
+      res.cookie('refreshToken', refreshToken, {
+         httpOnly: true,
+         secure: false, // true: chỉ gửi cookie qua https, false: gửi qua http
+         sameSite: 'Lax', // đảm bảo cookie được gửi trong nhiều domain
+         maxAge: 7*24*60*60*1000 // 7 ngày
+      })
 
       // 4 - Trả kết quả thành công
       res.status(200).json({
@@ -314,4 +337,40 @@ const loginFacebook =  async (req, res) => {
    }
 }
 
-export { register, login, forgotPassword, resetPassword, loginFacebook };
+const extendToken = async (req, res) => {
+   try {
+      // B1: lấy refreshToken từ cookie
+      let refreshToken = req.cookies.refreshToken;
+      console.log("refreshToken: ", refreshToken);
+
+      // B2: kiểm tra refreshToken có giá trị hay không
+      if(!refreshToken) {
+         return res.status(401).json({message: "Unauthorized"});
+      }
+
+      // B3: kiểm tra refreshToken có matching với db hay không
+      let user = await prisma.users.findFirst({
+         where: {
+            refresh_token: refreshToken
+         }
+      });
+
+      if(!user) {
+         return res.status(401).json({message: "Unauthorized"});
+      }
+
+      // kiểm tra refreshToken có hết hạn hay không => to be continue
+
+      // tạo access token mới cho user
+      let payload = {
+         userId: user.user_id
+      }
+      let newAccessToken = createAccessToken({payload});
+      return res.status(200).json({message: "Extend token success", token: newAccessToken});
+   } catch (error) {
+      console.log(error);
+      return res.status(500).json({message: "Error API extendToken"});
+   }
+}
+
+export { register, login, forgotPassword, resetPassword, loginFacebook, extendToken };
