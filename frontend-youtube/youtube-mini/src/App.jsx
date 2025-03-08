@@ -12,6 +12,7 @@ import { ToastContainer, toast } from 'react-toastify'; // import thư viện to
 // import css cho toastify
 import 'react-toastify/dist/ReactToastify.css';
 import PasswordReset from "./components/ForgotPass";
+import DemoSocket from "./components/DemoSocket";
 
 // Component App
 function App() {
@@ -48,6 +49,7 @@ const AppContent = () => {
             <Route path="/login" element={<Login />} />
             <Route path="/profile" element={<UserProfile />} />
             <Route path="/forgot-pass" element={<PasswordReset />} />
+            <Route path="/demo-socket" element={<DemoSocket />} />
           </Routes>
         </div>
       </div>

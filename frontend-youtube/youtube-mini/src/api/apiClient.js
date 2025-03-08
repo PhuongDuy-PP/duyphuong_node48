@@ -21,6 +21,11 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+// part 2: define const MAX_RETRIES để xác định số lần retry khi call API extend token
+// nếu vượt quá số lần retry, thì sẽ chuyển sang trang login
+const MAX_RETRIES = 10;
+let retryCount = 0;
+
 apiClient.interceptors.response.use(
   (response) => response, // nếu response thành công, trả về response
   async (error) => {
@@ -28,29 +33,36 @@ apiClient.interceptors.response.use(
 
     console.log("error.response: ", error.response);
 
-    if(error.response.status === 401){
-      // nếu response status = 401, gọi API extend-token
-      const response = await extendToken();
-      // response: message, token
-      console.log("response: ", response);
-      const newAccessToken = response.token
+    if (error.response.status === 401) {
+      if (retryCount < MAX_RETRIES) {
+        retryCount++;
+        // nếu response status = 401, gọi API extend-token
+        const response = await extendToken();
+        // response: message, token
+        console.log("response: ", response);
+        const newAccessToken = response.token
 
-      // lưu token mới vào localStorage
-      localStorage.setItem('USER_LOGIN', newAccessToken);
+        // lưu token mới vào localStorage
+        localStorage.setItem('USER_LOGIN', newAccessToken);
 
-      // gán token mới vào header
-      originalRequest.headers.Authorization = newAccessToken;
+        // gán token mới vào header
+        originalRequest.headers.Authorization = newAccessToken;
 
-      // thực hiện request cũ với token mới
-      return apiClient(originalRequest);
+        // thực hiện request cũ với token mới
+        return apiClient(originalRequest);
+      } else {
+        window.location.href = '/login';
+      }
+
     }
+    return Promise.reject(error);
   }
 )
 
 // tạo function call API extend-token
 const extendToken = async () => {
   try {
-    const {data} = await apiClient.post('/auth/extend-token', {}, {
+    const { data } = await apiClient.post('/auth/extend-token', {}, {
       withCredentials: true
     });
     return data;
