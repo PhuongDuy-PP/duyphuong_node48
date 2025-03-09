@@ -1,41 +1,72 @@
 import React, { useState, useEffect } from 'react';
 import '../style/Chat.css';
+import { io } from 'socket.io-client';
 
-const Chat = ({ onClose }) => {
+const socket = io('http://localhost:3001', {
+    withCredentials: true
+});
+
+const Chat = ({ chat, onClose }) => {
     const [messages, setMessages] = useState([
-        {
-            text: 'dài nhiều sớ tốn thời gian đường tóc',
-            sender: 'user2',
-            id: 1,
-            avatar: '/src/assets/jack.png'  // Sửa đường dẫn đến ảnh avatar trong assets
-        },
-        {
-            text: 'Mà nó đẹp á thấy',
-            sender: 'user2',
-            id: 2,
-            avatar: '/src/assets/jack.png'  // Sửa đường dẫn đến ảnh avatar trong assets
-        },
-        {
-            text: 'đẹp thì chịu vậy rồi 😂',
-            sender: 'user1',
-            id: 3,
-            avatar: '/src/assets/jack.png',  // Sửa đường dẫn đến ảnh avatar trong assets
-        },
+        // {
+        //     text: 'dài nhiều sớ tốn thời gian đường tóc',
+        //     sender: 'user2',
+        //     id: 1,
+        //     avatar: '/src/assets/jack.png'  // Sửa đường dẫn đến ảnh avatar trong assets
+        // },
+        // {
+        //     text: 'Mà nó đẹp á thấy',
+        //     sender: 'user2',
+        //     id: 2,
+        //     avatar: '/src/assets/jack.png'  // Sửa đường dẫn đến ảnh avatar trong assets
+        // },
+        // {
+        //     text: 'đẹp thì chịu vậy rồi 😂',
+        //     sender: 'user1',
+        //     id: 3,
+        //     avatar: '/src/assets/jack.png',  // Sửa đường dẫn đến ảnh avatar trong assets
+        // },
     ]);
 
     const [newMessage, setNewMessage] = useState('');
     const [image, setImage] = useState(null);
+    // currentUser là user hiện tại
+    const [currentUser, setCurrentUser] = useState(null);
 
     const handleSendMessage = () => {
         if (newMessage.trim() || image) {
+
+            // lấy thông tin user từ localStorage
+            const token = localStorage.getItem("USER_LOGIN");
+
+            // decode token (cheat decode)
+            const parts = token.split('.');
+            if (parts.length !== 3) throw new Error('Invalid token format');
+
+            const payload = parts[1]; // Lấy phần payload của JWT (Base64 encoded)
+            const decodedPayload = atob(payload); // Giải mã Base64
+
+            // parse string JSON thành JSON
+            // {"payload":{"userId":26},"iat":1741419151,"exp":1741426351}
+            const userInfor = JSON.parse(decodedPayload).payload;
+            setCurrentUser(userInfor.userId);
+
+            console.log("currentUser: ", currentUser);
+
             const newMsg = {
                 text: newMessage,
-                sender: 'user1',
-                id: Date.now(),
+                receivedId: chat.userId,
+                senderId: currentUser,
                 avatar: '/src/assets/jack.png', // Sửa đường dẫn đến ảnh avatar trong assets
                 image: image
             };
-            setMessages([...messages, newMsg]);
+
+            // Gửi tin nhắn lên server socketIO
+            socket.emit('sendMessage', newMsg);
+
+            // lưu tin nhắn vào state
+            // messages.push(newMsg);
+            // setMessages(messages);
             setNewMessage('');
             setImage(null);
         }
@@ -57,12 +88,28 @@ const Chat = ({ onClose }) => {
         }
     };
 
+    socket.on('receiveMessage', (message) => {
+        console.log("receiveMessage: ", message);
+        messages.push(message);
+        setMessages(messages);
+    });
+
     useEffect(() => {
         const chatContent = document.querySelector('.messages-container');
+        
         if (chatContent) {
             chatContent.scrollTop = chatContent.scrollHeight;
         }
     }, [messages]);
+    console.log("chat: ", chat);
+    // tạo thêm useEffect để lắng nghe sự kiện nhận tin nhắn từ server
+    // useEffect(() => {
+    //     socket.on('receiveMessage', (message) => {
+    //         console.log("receiveMessage: ", message);
+    //         messages.push(message);
+    //         setMessages(messages);
+    //     });
+    // }, [chat]);
 
     return (
         <div className="chat-container">
@@ -71,14 +118,14 @@ const Chat = ({ onClose }) => {
                 <div className="user-info">
                     <div className="avatar-container">
                         <img
-                            src="/src/assets/jack.png" // Đổi lại avatar trong assets
+                            src={chat.avatar} // Đổi lại avatar trong assets
                             alt="Avatar"
                             className="avatar"
                         />
                         <div className="status-dot"></div>
                     </div>
                     <div className="user-details">
-                        <div className="user-name">Nghiêm Bơ</div>
+                        <div className="user-name">{chat.name}</div>
                         <div className="user-status">Đang hoạt động</div>
                     </div>
                 </div>
@@ -101,9 +148,9 @@ const Chat = ({ onClose }) => {
                 {messages.map((message) => (
                     <div
                         key={message.id}
-                        className={`message ${message.sender === 'user1' ? 'sent' : 'received'}`}
+                        className={`message ${message.senderId === currentUser ? 'sent' : 'received'}`}
                     >
-                        {message.sender === 'user2' && (
+                        {message.senderId === currentUser && (
                             <img
                                 src={message.avatar}
                                 alt="Avatar"

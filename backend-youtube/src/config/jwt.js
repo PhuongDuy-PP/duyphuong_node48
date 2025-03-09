@@ -11,7 +11,7 @@ dotenv.config();
 const createAccessToken = (payload) => {
     return jwt.sign({payload}, process.env.SECRET_KEY, {
         algorithm: "HS256",
-        expiresIn: "10s" // h: hour, m: minutes, s: seconds, d: days
+        expiresIn: "3h" // h: hour, m: minutes, s: seconds, d: days
     })
 };
 

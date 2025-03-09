@@ -109,7 +109,8 @@ const login = async (req, res) => {
 
       // tạo access token cho user
       const payload = {
-         userId: userExists.user_id
+         userId: userExists.user_id,
+         name: userExists.full_name
       }
 
       // tạo access token
