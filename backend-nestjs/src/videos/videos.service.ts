@@ -1,15 +1,33 @@
 import { Injectable } from '@nestjs/common';
 import { CreateVideoDto } from './dto/create-video.dto';
 import { UpdateVideoDto } from './dto/update-video.dto';
+import {PrismaClient} from '@prisma/client';
 
 @Injectable()
 export class VideosService {
-  create(createVideoDto: CreateVideoDto) {
-    return 'This action adds a new video';
+  prisma = new PrismaClient();
+
+  async create(createVideoDto: CreateVideoDto) {
+    try {
+      return await this.prisma.videos.create({
+        data: createVideoDto
+      });
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 
-  findAll() {
-    return `This action returns all videos`;
+  async findAll(page, size, videoName) {
+    try {
+      let videos = await this.prisma.videos.findMany({
+        skip: (page - 1) * size,
+        take: size,
+        where: videoName ? {video_name: {contains: videoName}} : {}
+      });
+      return videos;
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 
   findOne(id: number) {

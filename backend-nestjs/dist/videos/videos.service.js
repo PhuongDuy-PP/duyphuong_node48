@@ -8,12 +8,31 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.VideosService = void 0;
 const common_1 = require("@nestjs/common");
+const client_1 = require("@prisma/client");
 let VideosService = class VideosService {
-    create(createVideoDto) {
-        return 'This action adds a new video';
+    prisma = new client_1.PrismaClient();
+    async create(createVideoDto) {
+        try {
+            return await this.prisma.videos.create({
+                data: createVideoDto
+            });
+        }
+        catch (error) {
+            throw new Error(error);
+        }
     }
-    findAll() {
-        return `This action returns all videos`;
+    async findAll(page, size, videoName) {
+        try {
+            let videos = await this.prisma.videos.findMany({
+                skip: (page - 1) * size,
+                take: size,
+                where: videoName ? { video_name: { contains: videoName } } : {}
+            });
+            return videos;
+        }
+        catch (error) {
+            throw new Error(error);
+        }
     }
     findOne(id) {
         return `This action returns a ${id} video`;

@@ -1,0 +1,204 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model forgot_password_code {
+  id          Int       @id @default(autoincrement())
+  forgot_code String?   @db.VarChar(50)
+  user_id     Int?
+  expired     DateTime? @db.Timestamp(0)
+  users       users?    @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "forgot_password_code_ibfk_1")
+
+  @@index([user_id], map: "user_id")
+}
+
+model group_members {
+  group_member_id Int       @id @default(autoincrement())
+  group_id        Int
+  user_id         Int
+  joined_at       DateTime? @default(now()) @db.Timestamp(0)
+  groups          groups    @relation(fields: [group_id], references: [group_id], onDelete: NoAction, onUpdate: NoAction, map: "group_members_ibfk_1")
+  users           users     @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "group_members_ibfk_2")
+
+  @@index([group_id], map: "group_id")
+  @@index([user_id], map: "user_id")
+}
+
+model groups {
+  group_id      Int             @id @default(autoincrement())
+  group_name    String          @db.VarChar(255)
+  created_at    DateTime?       @default(now()) @db.Timestamp(0)
+  group_members group_members[]
+  messages      messages[]
+}
+
+model likes {
+  like_id    Int        @id @default(autoincrement())
+  user_id    Int
+  video_id   Int?
+  type       likes_type
+  created_at DateTime?  @default(now()) @db.Timestamp(0)
+  users      users      @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "likes_ibfk_1")
+  videos     videos?    @relation(fields: [video_id], references: [video_id], onDelete: NoAction, onUpdate: NoAction, map: "likes_ibfk_2")
+
+  @@index([user_id], map: "user_id")
+  @@index([video_id], map: "video_id")
+}
+
+model menu_sidebar {
+  id         Int       @id @default(autoincrement())
+  item_name  String?   @db.VarChar(255)
+  icon       String?   @db.VarChar(255)
+  created_at DateTime? @default(now()) @db.Timestamp(0)
+}
+
+model messages {
+  message_id                        Int       @id @default(autoincrement())
+  sender_id                         Int
+  receiver_id                       Int?
+  group_id                          Int?
+  message_text                      String    @db.Text
+  created_at                        DateTime? @default(now()) @db.Timestamp(0)
+  users_messages_sender_idTousers   users     @relation("messages_sender_idTousers", fields: [sender_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "messages_ibfk_1")
+  users_messages_receiver_idTousers users?    @relation("messages_receiver_idTousers", fields: [receiver_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "messages_ibfk_2")
+  groups                            groups?   @relation(fields: [group_id], references: [group_id], onDelete: NoAction, onUpdate: NoAction, map: "messages_ibfk_3")
+
+  @@index([group_id], map: "group_id")
+  @@index([receiver_id], map: "receiver_id")
+  @@index([sender_id], map: "sender_id")
+}
+
+model permissions {
+  permission_id    Int                @id @default(autoincrement())
+  permission_name  String             @unique(map: "permission_name") @db.VarChar(50)
+  description      String?            @db.Text
+  role_permissions role_permissions[]
+}
+
+model role_permissions {
+  role_permission_id Int         @id @default(autoincrement())
+  role_id            Int
+  permission_id      Int
+  roles              roles       @relation(fields: [role_id], references: [role_id], onDelete: NoAction, onUpdate: NoAction, map: "role_permissions_ibfk_1")
+  permissions        permissions @relation(fields: [permission_id], references: [permission_id], onDelete: NoAction, onUpdate: NoAction, map: "role_permissions_ibfk_2")
+
+  @@index([permission_id], map: "permission_id")
+  @@index([role_id], map: "role_id")
+}
+
+model roles {
+  role_id          Int                @id @default(autoincrement())
+  role_name        String             @db.VarChar(50)
+  role_permissions role_permissions[]
+  user_roles       user_roles[]
+}
+
+model subscriptions {
+  subscription_id                          Int       @id @default(autoincrement())
+  user_id                                  Int
+  subscriber_id                            Int
+  created_at                               DateTime? @default(now()) @db.Timestamp(0)
+  users_subscriptions_user_idTousers       users     @relation("subscriptions_user_idTousers", fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "subscriptions_ibfk_1")
+  users_subscriptions_subscriber_idTousers users     @relation("subscriptions_subscriber_idTousers", fields: [subscriber_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "subscriptions_ibfk_2")
+
+  @@index([subscriber_id], map: "subscriber_id")
+  @@index([user_id], map: "user_id")
+}
+
+model user_chats {
+  chat_id                          Int       @id @default(autoincrement())
+  user1_id                         Int
+  user2_id                         Int
+  created_at                       DateTime? @default(now()) @db.Timestamp(0)
+  users_user_chats_user1_idTousers users     @relation("user_chats_user1_idTousers", fields: [user1_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "user_chats_ibfk_1")
+  users_user_chats_user2_idTousers users     @relation("user_chats_user2_idTousers", fields: [user2_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "user_chats_ibfk_2")
+
+  @@index([user1_id], map: "user1_id")
+  @@index([user2_id], map: "user2_id")
+}
+
+model user_roles {
+  user_role_id Int   @id @default(autoincrement())
+  user_id      Int
+  role_id      Int
+  users        users @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "user_roles_ibfk_1")
+  roles        roles @relation(fields: [role_id], references: [role_id], onDelete: NoAction, onUpdate: NoAction, map: "user_roles_ibfk_2")
+
+  @@index([role_id], map: "role_id")
+  @@index([user_id], map: "user_id")
+}
+
+model users {
+  user_id                                          Int                    @id @default(autoincrement())
+  full_name                                        String                 @db.VarChar(255)
+  email                                            String                 @db.VarChar(255)
+  avatar                                           String?                @db.VarChar(255)
+  pass_word                                        String                 @db.VarChar(255)
+  face_app_id                                      String?                @db.VarChar(100)
+  refresh_token                                    String?                @db.Text
+  secret_code                                      String?                @db.VarChar(50)
+  created_at                                       DateTime?              @default(now()) @db.Timestamp(0)
+  forgot_password_code                             forgot_password_code[]
+  group_members                                    group_members[]
+  likes                                            likes[]
+  messages_messages_sender_idTousers               messages[]             @relation("messages_sender_idTousers")
+  messages_messages_receiver_idTousers             messages[]             @relation("messages_receiver_idTousers")
+  subscriptions_subscriptions_user_idTousers       subscriptions[]        @relation("subscriptions_user_idTousers")
+  subscriptions_subscriptions_subscriber_idTousers subscriptions[]        @relation("subscriptions_subscriber_idTousers")
+  user_chats_user_chats_user1_idTousers            user_chats[]           @relation("user_chats_user1_idTousers")
+  user_chats_user_chats_user2_idTousers            user_chats[]           @relation("user_chats_user2_idTousers")
+  user_roles                                       user_roles[]
+  video_comments                                   video_comments[]
+  videos                                           videos[]
+}
+
+model video_comments {
+  comment_id Int       @id @default(autoincrement())
+  created_at DateTime? @default(now()) @db.Timestamp(0)
+  content    String?   @db.Text
+  reply_list String?   @db.VarChar(255)
+  user_id    Int?
+  video_id   Int?
+  users      users?    @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "video_comment_ibfk_1")
+  videos     videos?   @relation(fields: [video_id], references: [video_id], onDelete: NoAction, onUpdate: NoAction, map: "video_comment_ibfk_2")
+
+  @@index([user_id], map: "user_id")
+  @@index([video_id], map: "video_id")
+}
+
+model video_types {
+  type_id    Int       @id @default(autoincrement())
+  type_name  String    @db.VarChar(255)
+  icon       String?   @db.VarChar(255)
+  created_at DateTime? @default(now()) @db.Timestamp(0)
+  videos     videos[]
+}
+
+model videos {
+  video_id       Int              @id @default(autoincrement())
+  video_name     String           @db.VarChar(255)
+  thumbnail      String?          @db.VarChar(255)
+  description    String?          @db.Text
+  views          Int?
+  type_id        Int?
+  user_id        Int?
+  source         String?          @db.VarChar(255)
+  created_at     DateTime?        @default(now()) @db.Timestamp(0)
+  likes          likes[]
+  video_comments video_comments[]
+  video_types    video_types?     @relation(fields: [type_id], references: [type_id], onDelete: NoAction, onUpdate: NoAction, map: "videos_ibfk_1")
+  users          users?           @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "videos_ibfk_2")
+
+  @@index([type_id], map: "type_id")
+  @@index([user_id], map: "user_id")
+}
+
+enum likes_type {
+  like
+  dislike
+}
