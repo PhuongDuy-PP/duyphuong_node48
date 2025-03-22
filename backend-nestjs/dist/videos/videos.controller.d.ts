@@ -21,4 +21,6 @@ export declare class VideosController {
     update(id: string, updateVideoDto: UpdateVideoDto): string;
     remove(id: string): string;
     getParams(req: Request, id: string, name: string, token: string, body: any, res: Response): Response<any, Record<string, any>>;
+    uploadThumnail(file: Express.Multer.File, res: Response): any;
+    uploadMultipleThumbnail(files: Express.Multer.File[], res: Response): Response<any, Record<string, any>>;
 }

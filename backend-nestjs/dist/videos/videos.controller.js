@@ -18,6 +18,10 @@ const videos_service_1 = require("./videos.service");
 const create_video_dto_1 = require("./dto/create-video.dto");
 const update_video_dto_1 = require("./dto/update-video.dto");
 const swagger_1 = require("@nestjs/swagger");
+const platform_express_1 = require("@nestjs/platform-express");
+const upload_service_1 = require("../shared/upload.service");
+const file_upload_dto_1 = require("./dto/file-upload.dto");
+const file_multiple_upload_dto_1 = require("./dto/file-multiple-upload.dto");
 let VideosController = class VideosController {
     videosService;
     constructor(videosService) {
@@ -50,6 +54,12 @@ let VideosController = class VideosController {
         console.log(req.params);
         const idExpress = req.params.id;
         return res.status(200).json({ id, idExpress, name, token, body });
+    }
+    uploadThumnail(file, res) {
+        return res.status(common_1.HttpStatus.OK).json(file);
+    }
+    uploadMultipleThumbnail(files, res) {
+        return res.status(common_1.HttpStatus.OK).json(files);
     }
 };
 exports.VideosController = VideosController;
@@ -107,6 +117,28 @@ __decorate([
     __metadata("design:paramtypes", [Object, String, String, String, Object, Object]),
     __metadata("design:returntype", void 0)
 ], VideosController.prototype, "getParams", null);
+__decorate([
+    (0, common_1.Post)("/upload-thumbnail"),
+    (0, swagger_1.ApiConsumes)("multipart/form-data"),
+    (0, swagger_1.ApiBody)({ type: file_upload_dto_1.FileUploadDto, required: true }),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)("thumbnail", { storage: (0, upload_service_1.storage)("thumbnail") })),
+    __param(0, (0, common_1.UploadedFile)()),
+    __param(1, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Object)
+], VideosController.prototype, "uploadThumnail", null);
+__decorate([
+    (0, common_1.Post)("/upload-multiple-thumbnail"),
+    (0, swagger_1.ApiConsumes)("multipart/form-data"),
+    (0, swagger_1.ApiBody)({ type: file_multiple_upload_dto_1.FilesUploadDto, required: true }),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FilesInterceptor)("thumbnails", 20, { storage: (0, upload_service_1.storage)("thumbnail") })),
+    __param(0, (0, common_1.UploadedFiles)()),
+    __param(1, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Array, Object]),
+    __metadata("design:returntype", void 0)
+], VideosController.prototype, "uploadMultipleThumbnail", null);
 exports.VideosController = VideosController = __decorate([
     (0, common_1.Controller)('videos'),
     __metadata("design:paramtypes", [videos_service_1.VideosService])
