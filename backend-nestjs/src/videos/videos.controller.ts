@@ -1,13 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Req, Query, Header, Headers, HttpStatus, UseInterceptors, UploadedFile, UploadedFiles } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Req, Query, Header, Headers, HttpStatus, UseInterceptors, UploadedFile, UploadedFiles, UseGuards } from '@nestjs/common';
 import { VideosService } from './videos.service';
 import { CreateVideoDto } from './dto/create-video.dto';
 import { UpdateVideoDto } from './dto/update-video.dto';
 import { Request, Response } from 'express';
-import { ApiBody, ApiConsumes, ApiQuery } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiQuery } from '@nestjs/swagger';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { storage } from 'src/shared/upload.service';
 import { FileUploadDto } from './dto/file-upload.dto';
 import { FilesUploadDto } from './dto/file-multiple-upload.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 // http://localhost:3000/videos
 
@@ -21,6 +22,8 @@ export class VideosController {
   }
 
   @Get("/get-all")
+  @ApiBearerAuth() // define cho swagger biết cần phải có token
+  @UseGuards(AuthGuard('jwt')) // define cho nestjs biết cần phải có token
   @ApiQuery({ name: "page", required: false, type: Number })
   @ApiQuery({ name: "size", required: false, type: Number })
   @ApiQuery({ name: "video_name", required: false, type: String })
@@ -76,6 +79,8 @@ export class VideosController {
 
   // define API upload single image
   @Post("/upload-thumbnail")
+  @ApiBearerAuth() // define cho swagger biết cần phải có token
+  @UseGuards(AuthGuard('jwt'))
   @ApiConsumes("multipart/form-data") // define type upload file
   @ApiBody({ type: FileUploadDto, required: true }) // define body trên swagger
   @UseInterceptors(FileInterceptor("thumbnail", { storage: storage("thumbnail") }))

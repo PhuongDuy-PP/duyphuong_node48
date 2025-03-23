@@ -22,6 +22,7 @@ const platform_express_1 = require("@nestjs/platform-express");
 const upload_service_1 = require("../shared/upload.service");
 const file_upload_dto_1 = require("./dto/file-upload.dto");
 const file_multiple_upload_dto_1 = require("./dto/file-multiple-upload.dto");
+const passport_1 = require("@nestjs/passport");
 let VideosController = class VideosController {
     videosService;
     constructor(videosService) {
@@ -72,6 +73,8 @@ __decorate([
 ], VideosController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)("/get-all"),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
     (0, swagger_1.ApiQuery)({ name: "page", required: false, type: Number }),
     (0, swagger_1.ApiQuery)({ name: "size", required: false, type: Number }),
     (0, swagger_1.ApiQuery)({ name: "video_name", required: false, type: String }),
@@ -119,6 +122,8 @@ __decorate([
 ], VideosController.prototype, "getParams", null);
 __decorate([
     (0, common_1.Post)("/upload-thumbnail"),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
     (0, swagger_1.ApiConsumes)("multipart/form-data"),
     (0, swagger_1.ApiBody)({ type: file_upload_dto_1.FileUploadDto, required: true }),
     (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)("thumbnail", { storage: (0, upload_service_1.storage)("thumbnail") })),

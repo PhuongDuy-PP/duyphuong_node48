@@ -18,10 +18,13 @@ const auth_service_1 = require("./auth.service");
 const create_auth_dto_1 = require("./dto/create-auth.dto");
 const update_auth_dto_1 = require("./dto/update-auth.dto");
 const login_dto_1 = require("./dto/login.dto");
+const email_service_1 = require("../email/email.service");
 let AuthController = class AuthController {
     authService;
-    constructor(authService) {
+    emailService;
+    constructor(authService, emailService) {
         this.authService = authService;
+        this.emailService = emailService;
     }
     async login(body, res) {
         try {
@@ -46,6 +49,13 @@ let AuthController = class AuthController {
     }
     remove(id) {
         return this.authService.remove(+id);
+    }
+    async sendEmail(res) {
+        let recieveEmail = "duyphuong1011996@gmail.com";
+        let subject = "test send email";
+        let content = "test send email";
+        await this.emailService.sendEmail(recieveEmail, subject, content);
+        return res.status(common_1.HttpStatus.OK).json({ message: "send email success" });
     }
 };
 exports.AuthController = AuthController;
@@ -92,8 +102,16 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "remove", null);
+__decorate([
+    (0, common_1.Post)("/send-email"),
+    __param(0, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "sendEmail", null);
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)('auth'),
-    __metadata("design:paramtypes", [auth_service_1.AuthService])
+    __metadata("design:paramtypes", [auth_service_1.AuthService,
+        email_service_1.EmailService])
 ], AuthController);
 //# sourceMappingURL=auth.controller.js.map

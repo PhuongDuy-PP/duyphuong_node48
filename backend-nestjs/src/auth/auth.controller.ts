@@ -4,10 +4,14 @@ import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
 import { Response } from 'express';
 import { LoginDto } from './dto/login.dto';
+import { EmailService } from 'src/email/email.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly emailService: EmailService
+  ) {}
 
   // define API login
   @Post("/login")
@@ -46,5 +50,19 @@ export class AuthController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.authService.remove(+id);
+  }
+
+  // define API send email
+  @Post("/send-email")
+  async sendEmail(
+    @Res() res: Response
+  ){
+    let recieveEmail = "duyphuong1011996@gmail.com";
+    let subject = "test send email";
+    let content = "test send email";
+
+    // send email
+    await this.emailService.sendEmail(recieveEmail, subject, content);
+    return res.status(HttpStatus.OK).json({message: "send email success"});
   }
 }

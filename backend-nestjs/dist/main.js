@@ -11,6 +11,7 @@ async function bootstrap() {
         .setTitle('API youtube mini')
         .setDescription("Danh sách API youtube mini")
         .setVersion("1.0")
+        .addBearerAuth()
         .build();
     const swagger = swagger_1.SwaggerModule.createDocument(app, configSwagger);
     swagger_1.SwaggerModule.setup("swagger", app, swagger);

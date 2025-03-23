@@ -14,6 +14,7 @@ async function bootstrap() {
     .setTitle('API youtube mini')
     .setDescription("Danh sách API youtube mini")
     .setVersion("1.0")
+    .addBearerAuth()
     .build(); // builder pattern
   
     // apply config to swagger

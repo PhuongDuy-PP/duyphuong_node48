@@ -6,24 +6,16 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AuthModule = void 0;
+exports.EmailModule = void 0;
 const common_1 = require("@nestjs/common");
-const auth_service_1 = require("./auth.service");
-const auth_controller_1 = require("./auth.controller");
-const jwt_strategy_1 = require("../strategy/jwt.strategy");
-const jwt_1 = require("@nestjs/jwt");
-const email_module_1 = require("../email/email.module");
-let AuthModule = class AuthModule {
+const email_service_1 = require("./email.service");
+let EmailModule = class EmailModule {
 };
-exports.AuthModule = AuthModule;
-exports.AuthModule = AuthModule = __decorate([
+exports.EmailModule = EmailModule;
+exports.EmailModule = EmailModule = __decorate([
     (0, common_1.Module)({
-        controllers: [auth_controller_1.AuthController],
-        providers: [auth_service_1.AuthService, jwt_strategy_1.JwtStrategy],
-        imports: [
-            jwt_1.JwtModule.register({}),
-            email_module_1.EmailModule
-        ]
+        providers: [email_service_1.EmailService],
+        exports: [email_service_1.EmailService]
     })
-], AuthModule);
-//# sourceMappingURL=auth.module.js.map
+], EmailModule);
+//# sourceMappingURL=email.module.js.map
