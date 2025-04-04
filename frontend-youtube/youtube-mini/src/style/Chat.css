@@ -32,7 +32,6 @@
     animation: slideUp 0.3s ease-out;
 }
 
-/* Rest of the CSS remains the same */
 /* Chat Header */
 .chat-header {
     display: flex;
@@ -243,29 +242,14 @@
     background: #868E96; /* Hover scrollbar đậm hơn */
 }
 
-/* Add media queries for responsiveness */
-@media screen and (max-width: 768px) {
+/* Responsive adjustments */
+@media (max-width: 768px) {
     .chat-container {
         width: 100%;
         height: 100%;
         bottom: 0;
         right: 0;
         border-radius: 0;
-    }
-
-    .chat-header {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .user-info {
-        flex-direction: row; /* Đảm bảo rằng tên và trạng thái vẫn ngang với avatar */
-        gap: 12px;
-    }
-
-    .avatar-container {
-        width: 32px;
-        height: 32px;
     }
 
     .chat-header .user-name {

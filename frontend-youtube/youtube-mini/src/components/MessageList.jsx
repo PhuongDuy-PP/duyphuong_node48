@@ -1,58 +1,112 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import "../style/MessageList.css";
-import { io } from 'socket.io-client';
-
-// kết nối tới server socket
-const socket = io("http://localhost:3001", {
-    withCredentials: true
-});
+import { getSocket, storeUnreadMessage, getUnreadMessages } from '../services/socketService';
 
 const MessageList = ({ onSelectChat, onClose }) => {
     const [onlineUsers, setOnlineUsers] = useState([]);
+    const [socketInstance, setSocketInstance] = useState(null);
+    const [currentUser, setCurrentUser] = useState(null);
+    const [userName, setUserName] = useState("");
+    const [unreadCounts, setUnreadCounts] = useState({});
 
-    const messages = [
-        { id: 1, name: "Sơn Tùng", avatar: "/src/assets/jack.png", lastMessage: "Chào Phương, mình là Sơn Tùng MTP", time: "3 giờ" },
-        { id: 2, name: "Minhh Thư", avatar: "/src/assets/jack.png", lastMessage: "Đã bày tỏ cảm xúc về tin nhắn", time: "4 giờ" },
-        // Add more messages as needed
-    ];
+    // Initialize socket connection
+    useEffect(() => {
+        const socket = getSocket();
+        setSocketInstance(socket);
+        
+        // Cleanup function
+        return () => {
+            // Don't disconnect the socket here, just remove listeners
+            console.log('Cleaning up socket listeners in MessageList');
+        };
+    }, []);
+
+    // Get current user info
+    useEffect(() => {
+        const token = localStorage.getItem("USER_LOGIN");
+        if (token) {
+            try {
+                const parts = token.split('.');
+                if (parts.length === 3) {
+                    const payload = parts[1];
+                    const decodedPayload = atob(payload);
+                    const userInfor = JSON.parse(decodedPayload).payload;
+                    setCurrentUser(userInfor.userId);
+                    setUserName(userInfor.username || userInfor.name || "User"); // Get username from token, fallback to name or "User"
+                    console.log('Current user ID in MessageList:', userInfor.userId);
+                    console.log('Current user name in MessageList:', userInfor.username || userInfor.name);
+                }
+            } catch (error) {
+                console.error('Error parsing user token:', error);
+            }
+        }
+    }, []);
 
     // useEffect để hiển thị list user đang online
     useEffect(() => {
-        // get user info từ localStorage
-        const token = localStorage.getItem("USER_LOGIN");
-
-        // decode token (cheat decode)
-        const parts = token.split('.');
-        if (parts.length !== 3) throw new Error('Invalid token format');
-
-        const payload = parts[1]; // Lấy phần payload của JWT (Base64 encoded)
-        const decodedPayload = atob(payload); // Giải mã Base64
-
-        // parse string JSON thành JSON
-        // {"payload":{"userId":26},"iat":1741419151,"exp":1741426351}
-        const userInfor = JSON.parse(decodedPayload).payload;
-        console.log(userInfor);
+        if (!socketInstance || !currentUser) return;
 
         // gửi info user lên server socketIO để thông báo là user đã online
-        socket.emit("userConnected", {
-            userId: userInfor.userId,
-            name: userInfor.name,
+        socketInstance.emit("userConnected", {
+            userId: currentUser,
+            name: userName, // Use the name from token
             avatar: "/src/assets/jack.png"
-        })
+        });
 
         // nhận danh sách user online từ server
-        socket.on("onlineUsers", (users) => {
+        const handleOnlineUsers = (users) => {
             console.log("Danh sách user online: ", users);
 
             // filter user hiện tại ra khỏi danh sách user online
-            const filterUsers = users.filter(u => u.userId !== userInfor.userId);
+            const filterUsers = users.filter(u => u.userId !== currentUser);
             setOnlineUsers(filterUsers);
+        };
 
-        })
+        socketInstance.on("onlineUsers", handleOnlineUsers);
 
-        // return userInfor.payload;
-    }, [])
+        // Listen for incoming messages
+        const handleReceiveMessage = (message) => {
+            console.log('Received message in MessageList:', message);
+            
+            // If the message is for the current user, store it as unread
+            if (message.receivedId === currentUser) {
+                storeUnreadMessage(message);
+                
+                // Update unread count for this sender
+                setUnreadCounts(prevCounts => {
+                    const senderId = message.senderId;
+                    return {
+                        ...prevCounts,
+                        [senderId]: (prevCounts[senderId] || 0) + 1
+                    };
+                });
+            }
+        };
+
+        socketInstance.on('receiveMessage', handleReceiveMessage);
+
+        // Cleanup socket listener
+        return () => {
+            socketInstance.off("onlineUsers", handleOnlineUsers);
+            socketInstance.off('receiveMessage', handleReceiveMessage);
+        };
+    }, [socketInstance, currentUser, userName]);
+
+    // Load unread counts for all users
+    useEffect(() => {
+        if (!currentUser) return;
+        
+        const counts = {};
+        onlineUsers.forEach(user => {
+            const unreadMsgs = getUnreadMessages(user.userId, currentUser);
+            if (unreadMsgs.length > 0) {
+                counts[user.userId] = unreadMsgs.length;
+            }
+        });
+        
+        setUnreadCounts(counts);
+    }, [onlineUsers, currentUser]);
 
     return (
         <div className="message-list-container">
@@ -68,20 +122,6 @@ const MessageList = ({ onSelectChat, onClose }) => {
                 <button>Nhóm</button>
             </div>
             <div className="messages">
-                {/* {messages.map((message) => (
-                    <div key={message.id} className="message-item" onClick={() => onSelectChat(message)}>
-                        <img src={message.avatar} alt={message.name} className="avatar" />
-                        <div className="message-content">
-                            <h4>{message.name}</h4>
-                            <p>
-                                {message.lastMessage.length > 20
-                                    ? `${message.lastMessage.slice(0, 20)}...`
-                                    : message.lastMessage}
-                                · {message.time}
-                            </p>
-                        </div>
-                    </div>
-                ))} */}
                 {onlineUsers.map(user => {
                     return (
                         <div key={user.socketId} className='message-item' onClick={() => {
@@ -92,6 +132,9 @@ const MessageList = ({ onSelectChat, onClose }) => {
                                 <h4>{user.name}</h4>
                                 <p className='online-status'>Đang online</p>
                             </div>
+                            {unreadCounts[user.userId] > 0 && (
+                                <div className='unread-badge'>{unreadCounts[user.userId]}</div>
+                            )}
                             <div className='online-indicator'></div>
                         </div>
                     )

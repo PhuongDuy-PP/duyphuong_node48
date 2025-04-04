@@ -83,6 +83,7 @@
     display: flex;
     align-items: center;
     cursor: pointer;
+    position: relative;
 }
 
 .message-item:hover {
@@ -106,4 +107,36 @@
     margin: 4px 0 0;
     color: #6C757D; /* Màu chữ nhạt */
     font-size: 13px;
+}
+
+.online-status {
+    margin: 0;
+    font-size: 12px;
+    color: #65676b;
+}
+
+.online-indicator {
+    width: 10px;
+    height: 10px;
+    background-color: #31a24c;
+    border-radius: 50%;
+    margin-left: 8px;
+}
+
+.unread-badge {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #1877f2;
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    min-width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 6px;
 }
